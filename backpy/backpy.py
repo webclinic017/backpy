@@ -2,12 +2,13 @@ from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 import argparse
 import os
-from strategies._strat_dict import strategies
 if __package__ is None or __package__ == '':
+    from strategies._strat_dict import strategies
     print("one", __package__)
     from utils import charge_fees, charge_commissions, load_data
     import utils as ut
 else:
+    from .strategies._strat_dict import strategies
     print("2", __package__)
     from . import utils as ut
     from .utils import charge_fees, charge_commissions, load_data
