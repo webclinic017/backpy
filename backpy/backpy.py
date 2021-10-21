@@ -5,8 +5,10 @@ import os
 from utils import charge_fees, charge_commissions, load_data
 from strategies._strat_dict import strategies
 if __package__ is None or __package__ == '':
+    print("one", __package__)
     import utils as ut
 else:
+    print("2", __package__)
     from . import utils as ut
 
 
