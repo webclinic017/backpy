@@ -28,7 +28,6 @@ strategies = {
     "TAMomentum": TAMomentum,
     "RandomForests": RandomForests,
     "OneLongShort": OneLongShort,
-    "MarketLeaders": MarketLeaders,
     "TopN": TopN,
     "LongBTC": LongBTC
 }
