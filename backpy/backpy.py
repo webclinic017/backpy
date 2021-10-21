@@ -1,8 +1,8 @@
 import argparse
 import os
-import utils as ut
-from strategies._strat_dict import strategies
-from utils import charge_fees, charge_commissions, load_data
+from . import utils as ut
+from .strategies._strat_dict import strategies
+from .utils import charge_fees, charge_commissions, load_data
 
 
 CEREBRO_PATH = os.environ["CEREBRO_PATH"]
