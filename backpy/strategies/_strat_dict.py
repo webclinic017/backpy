@@ -10,7 +10,6 @@ from .Optimizer import Optimizer
 from .TAMomentum import TAMomentum
 from .RandomForests import RandomForests
 from .OneLongShort import OneLongShort
-from .bitso.MarketLeaders import MarketLeaders
 from .TopN import TopN
 from .LongBTC import LongBTC
 
