@@ -1,10 +1,8 @@
 import pandas_ta as ta
-from datetime import datetime
 import pandas as pd
-import random
 import os
 
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 CEREBRO_PATH = os.environ["CEREBRO_PATH"]
 

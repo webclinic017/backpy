@@ -1,8 +1,5 @@
 
-import pandas_ta as ta
-from datetime import datetime
 import pandas as pd
-import math
 import os
 from sizers._sizers_dict import sizers
 

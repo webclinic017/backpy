@@ -1,9 +1,5 @@
-import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
 
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 class Btc_multi_mac(BaseStrategy):
     def __init__(self, args):

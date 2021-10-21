@@ -1,12 +1,8 @@
 import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
-import math
 
 # python satoshi.py -strategy C10_multi_mac -start_date 2021-01-01 -fee 0.001 -sizer market_cap -diversification_factor 0.7 -management_commission 0 -success_commission 0 -plot True -top 30 -max_weight 0.2
 
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 class TAMomentum(BaseStrategy):
     def __init__(self, args):

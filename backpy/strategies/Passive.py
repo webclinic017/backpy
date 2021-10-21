@@ -1,9 +1,4 @@
-import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
-
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 # python satoshi.py -strategy Passive -start_date 2021-01-15 -fee 0.001 -sizer market_cap -diversification_factor 0.7 -management_commission 0 -success_commission 0 -save index -plot True
 

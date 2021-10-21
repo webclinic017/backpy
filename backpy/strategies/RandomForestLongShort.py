@@ -1,4 +1,4 @@
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 import pandas_ta as ta
 from datetime import datetime
 import pandas as pd

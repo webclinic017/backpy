@@ -1,7 +1,7 @@
 from binance.client import Client
 import requests
 
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 
 def get_broker_symbols(broker: str):

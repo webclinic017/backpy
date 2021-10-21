@@ -1,9 +1,4 @@
-import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
-
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 
 class Optimizer(BaseStrategy):

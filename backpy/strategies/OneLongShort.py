@@ -1,10 +1,5 @@
-import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
-import math
 
-from strategies.BaseStrategy import BaseStrategy
+from .BaseStrategy import BaseStrategy
 
 class OneLongShort(BaseStrategy):
     def __init__(self, args):
