@@ -1,18 +1,18 @@
-from strategies.Btc_triple_conf import Btc_triple_conf
-from strategies.Passive import Passive
-from strategies.Btc_mac import Btc_mac
-from strategies.Btc_multi_mac import Btc_multi_mac
-from strategies.C10_multi_mac import C10_multi_mac
-from strategies.RandomForest import RandomForest
-from strategies.RandomForestLongShort import RandomForestLongShort
-from strategies.Momentum import Momentum
-from strategies.Optimizer import Optimizer
-from strategies.TAMomentum import TAMomentum
-from strategies.RandomForests import RandomForests
-from strategies.OneLongShort import OneLongShort
-from strategies.bitso.MarketLeaders import MarketLeaders
-from strategies.TopN import TopN
-from strategies.LongBTC import LongBTC
+from .Btc_triple_conf import Btc_triple_conf
+from .Passive import Passive
+from .Btc_mac import Btc_mac
+from .Btc_multi_mac import Btc_multi_mac
+from .C10_multi_mac import C10_multi_mac
+from .RandomForest import RandomForest
+from .RandomForestLongShort import RandomForestLongShort
+from .Momentum import Momentum
+from .Optimizer import Optimizer
+from .TAMomentum import TAMomentum
+from .RandomForests import RandomForests
+from .OneLongShort import OneLongShort
+from .bitso.MarketLeaders import MarketLeaders
+from .TopN import TopN
+from .LongBTC import LongBTC
 
 
 
