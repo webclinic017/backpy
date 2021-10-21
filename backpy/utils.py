@@ -1,3 +1,4 @@
+
 import ast
 from datetime import datetime
 import empyrical as emp
@@ -7,8 +8,12 @@ import matplotlib.pyplot as plt
 import os
 from requests import Session
 import json
-from .stops._stops_dict import stops
 from pathlib import Path
+
+if __package__ is None or __package__ == '':
+    from stops._stops_dict import stops
+else:
+    from .stops._stops_dict import stops
 
 
 DATASETS_PATH = os.environ["DATASETS_PATH"]

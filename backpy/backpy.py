@@ -1,8 +1,13 @@
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 import argparse
 import os
-from . import utils as ut
-from .strategies._strat_dict import strategies
-from .utils import charge_fees, charge_commissions, load_data
+from utils import charge_fees, charge_commissions, load_data
+from strategies._strat_dict import strategies
+if __package__ is None or __package__ == '':
+    import utils as ut
+else:
+    from . import utils as ut
 
 
 CEREBRO_PATH = os.environ["CEREBRO_PATH"]
