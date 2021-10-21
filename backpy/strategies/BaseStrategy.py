@@ -1,7 +1,7 @@
 
 import pandas as pd
 import os
-from sizers._sizers_dict import sizers
+from ..sizers._sizers_dict import sizers
 
 DATASETS_PATH = os.environ["DATASETS_PATH"]
 
