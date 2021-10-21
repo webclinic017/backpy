@@ -8,13 +8,13 @@ with open('backpy/requirements.txt') as f:
 
 setuptools.setup(
     name='backpy',
-    version='0.0.3',
+    version='0.0.4',
     author='Ridian',
     author_email='contact@ridian.io',
     description='Python vectorized backtester',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/ridian-io/backpy',
-    packages=['backpy'],
+    packages=['backpy', 'backpy.sizers', 'backpy.stops', 'backpy.strategies'],
     install_requires=required,
 )
