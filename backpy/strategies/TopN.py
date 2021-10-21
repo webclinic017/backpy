@@ -1,7 +1,3 @@
-import pandas_ta as ta
-from datetime import datetime
-import pandas as pd
-import random
 from binance.client import Client
 import requests
 
