@@ -1,6 +1,6 @@
-from sizers.equal import equal
-from sizers.market_cap import market_cap
-from sizers.power_cap import power_cap
+from .equal import equal
+from .market_cap import market_cap
+from .power_cap import power_cap
 
 
 sizers = {
