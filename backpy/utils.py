@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import os
 from requests import Session
 import json
-from stops._stops_dict import stops
+from .stops._stops_dict import stops
 from pathlib import Path
 
 
