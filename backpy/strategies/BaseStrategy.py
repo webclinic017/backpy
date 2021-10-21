@@ -4,7 +4,7 @@ import os
 if __package__ is None or __package__ == '':
     from sizers._sizers_dict import sizers
 else:
-    from sizers._sizers_dict import sizers
+    from ..sizers._sizers_dict import sizers
 
 
 DATASETS_PATH = os.environ["DATASETS_PATH"]
