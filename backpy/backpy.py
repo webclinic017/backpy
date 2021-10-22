@@ -1,7 +1,7 @@
 import os
 import argparse
 
-os.environ['environment'] = 'TEST' #TEST, PROD
+os.environ['environment'] = 'PROD' #TEST, PROD
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
