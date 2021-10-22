@@ -49,16 +49,16 @@ def compute_metrics(performance):
     num_days = len(performance)
     metrics = {
         "Final NAV": performance[-1],
-        "Sharpe Ratio": [emp.sharpe_ratio(returns)],
-        "CAGR": [emp.cagr(returns)],
-        "Sortino": [emp.sortino_ratio(returns)],
-        "Max-Drawdown": [emp.max_drawdown(returns) * 100],
+        "Sharpe Ratio": emp.sharpe_ratio(returns),
+        "CAGR": emp.cagr(returns),
+        "Sortino": emp.sortino_ratio(returns),
+        "Max-Drawdown": emp.max_drawdown(returns) * 100,
         "returns-1M": performance.iloc[-1]/ performance.iloc[max(-30, -1*num_days)],
         "returns-3M": performance.iloc[-1]/ performance.iloc[max(-90, -1*num_days)],
         "returns-YTD": performance.iloc[-1]/ performance.loc["2021-01-01"],
         "returns-12M": performance.iloc[-1]/ performance.iloc[max(-364, -1*num_days)],
     }
-    metrics = pd.DataFrame.from_dict(metrics)
+
     return metrics
 
 
