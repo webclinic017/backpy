@@ -1,15 +1,15 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-import argparse
 import os
-if __package__ is None or __package__ == '':
+import argparse
+
+os.environ['environment'] = 'TEST' #TEST, PROD
+ENVIRONMENT = os.environ["environment"]
+
+if ENVIRONMENT == "TEST":
     from strategies._strat_dict import strategies
-    print("one", __package__)
     from utils import charge_fees, charge_commissions, load_data
     import utils as ut
 else:
     from .strategies._strat_dict import strategies
-    print("2", __package__)
     from . import utils as ut
     from .utils import charge_fees, charge_commissions, load_data
 
@@ -57,7 +57,7 @@ def get_args(meta_args):
 def run_strat(strategy, data, args):
     initial_cash = 100
 
-    data = ut.add_short_returns(data)
+    # data = ut.add_short_returns(data)
     # data = ut.add_short_ohlc(data)
 
     data = strategy.add_indicators(data, args)
@@ -95,7 +95,6 @@ def main():
         "management_commission": 0,
         "success_commission": 0,
         "save": "TopN",
-        "top": 10,
         "data": "cmc",
         "plot": True,
         "cppi_floor": 0.6,
@@ -105,6 +104,7 @@ def main():
     args = get_args(meta_args)
     strategy = strategies[args["strategy"]](args)
     data = load_data(args, strategy)
+    data["returns"] = data["close"].pct_change()
     metrics, performance, weights = run_strat(strategy, data, args)
     print(metrics)
     print(performance)
