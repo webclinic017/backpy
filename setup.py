@@ -8,7 +8,7 @@ with open('backpy/requirements.txt') as f:
 
 setup(
     name='backpy',
-    version='0.0.5',
+    version='0.0.6',
     author='Ridian',
     author_email='contact@ridian.io',
     description='Python vectorized backtester',
