@@ -9,11 +9,17 @@ import os
 from requests import Session
 import json
 from pathlib import Path
+from google.cloud import bigquery
+
 
 if __package__ is None or __package__ == '':
     from stops._stops_dict import stops
 else:
     from .stops._stops_dict import stops
+
+key_path = "./lambda1-bigquery-service-account.json"
+
+bq_client = bigquery.Client.from_service_account_json(key_path)
 
 
 DATASETS_PATH = os.environ["DATASETS_PATH"]
@@ -60,7 +66,7 @@ def filter_dates(datas, start_date, end_date):
     return datas
 
 
-def plot(data, performance, strategy, metrics, weights, args, benchmark="ETH"):
+def plot(data, performance, strategy, metrics, weights, args, benchmark="BTC"):
     fig = plt.figure()
     gs = GridSpec(2, 1, height_ratios=[4, 1])
 
@@ -73,13 +79,13 @@ def plot(data, performance, strategy, metrics, weights, args, benchmark="ETH"):
     ax1.grid(True)
     ax1.legend(loc='upper left', shadow=True)
 
-    # ax2 = fig.add_subplot(gs[1])
-    # ax2.plot(weights.sum(axis=1), label="Invested Cash", color="green")
+    ax2 = fig.add_subplot(gs[1])
+    ax2.plot(weights.sum(axis=1), label="Invested Cash", color="green")
     # if "etf_sma_slow" in data:
     #     market_filter = (data["etf_close"]["SPY"] >= data["etf_sma_slow"]["SPY"] * strategy.params["market_filter_margin"]).astype(int)
     #     ax2.plot(market_filter, label="Market Filter")
-    # ax2.legend(loc='lower left', shadow=True)
-    # ax2.tick_params(labelbottom=False)
+    ax2.legend(loc='lower left', shadow=True)
+    ax2.tick_params(labelbottom=False)
 
     plt.show()
 
@@ -180,6 +186,38 @@ def compute_positions(weights):
 
     return pd.DataFrame.from_records(data)
 
+def get_bq_data():
+    bq_table_id = "lambda1-299719.crypto_cmk.mod_daily_"
+    data = {
+        "open": bq_query(bq_table_id+"open"),
+        "high": bq_query(bq_table_id+"high"),
+        "low": bq_query(bq_table_id+"low"),
+        "close": bq_query(bq_table_id+"close"),
+        "volume": bq_query(bq_table_id+"volume"),
+        "cap": bq_query(bq_table_id+"marketcap"),
+    }
+    for k, df in data.items():
+        df.columns = [name.replace("_","") for name in df.columns]
+        df['date'] = pd.to_datetime(df['date'])
+        data[k] = df.set_index('date')
+        data[k] = data[k].fillna(method='ffill').fillna(method='bfill')
+    data["returns"] = data["close"].pct_change()
+    return data
+
+def bq_query(
+        table_id: str,
+        bigquery_client=bq_client,
+    ):
+        filtering_query = f"""
+            SELECT *
+            FROM {table_id}
+            ORDER BY date
+        """
+
+        query_job = bigquery_client.query(filtering_query)
+        df = query_job.to_dataframe()
+
+        return df
 
 def load_data(args, strategy):
     data = None
@@ -189,6 +227,8 @@ def load_data(args, strategy):
         data = load_performance_data(args, strategy)
     # elif args["data"] == "performance":
     #     data = load_big_query_data(args)
+    elif args["data"] == "bigquery":
+        data = get_bq_data()
     else:
         data = load_quandl_data(args)
     return data

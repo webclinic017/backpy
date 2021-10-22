@@ -1,7 +1,7 @@
 import os
 import argparse
 
-os.environ['environment'] = 'PROD' #TEST, PROD
+os.environ['environment'] = 'TEST' #TEST, PROD
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
@@ -79,8 +79,8 @@ def run_strat(strategy, data, args):
     print(metrics)
 
     # ut.save_output(weights, args, performance, metrics)
-    # if args["plot"]:
-    #     ut.plot(data, performance, strategy, metrics, weights, args)
+    if args["plot"]:
+        ut.plot(data, performance, strategy, metrics, weights, args)
 
     return metrics, performance, weights
 
@@ -88,18 +88,21 @@ def run_strat(strategy, data, args):
 def main():
     meta_args = {
         "strategy": "TopN",
-        "start_date": "2020-08-01",
+        "start_date": "2021-01-01",
+        "end_date": "2022-04-01",
         "fee": 0,
         "sizer": "power_cap",
-        "diversification_factor": 1,
         "management_commission": 0,
         "success_commission": 0,
         "save": "TopN",
-        "data": "cmc",
+        "data": "bigquery",
         "plot": True,
-        "cppi_floor": 0.6,
+
+        "diversification_factor": 1,
+        "cppi_floor": 0.55,
         "cppi_multiplier": 1,
-        "plot": True
+        "max_positions": 10,
+        "broker": "Bitso"
     }
     args = get_args(meta_args)
     strategy = strategies[args["strategy"]](args)
