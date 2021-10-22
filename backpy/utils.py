@@ -44,14 +44,19 @@ def get_args(parsed_args, meta_args):
     return args
 
 
-def compute_metrics(portfolio_value):
-    returns = portfolio_value.pct_change()
+def compute_metrics(performance):
+    returns = performance.pct_change().fillna(0)
+    num_days = len(performance)
     metrics = {
-        "Final NAV": portfolio_value[-1],
+        "Final NAV": performance[-1],
         "Sharpe Ratio": [emp.sharpe_ratio(returns)],
         "CAGR": [emp.cagr(returns)],
         "Sortino": [emp.sortino_ratio(returns)],
         "Max-Drawdown": [emp.max_drawdown(returns) * 100],
+        "returns-1M": performance.iloc[-1]/ performance.iloc[max(-30, -1*num_days)],
+        "returns-3M": performance.iloc[-1]/ performance.iloc[max(-90, -1*num_days)],
+        "returns-YTD": performance.iloc[-1]/ performance.loc["2021-01-01"],
+        "returns-12M": performance.iloc[-1]/ performance.iloc[max(-364, -1*num_days)],
     }
     metrics = pd.DataFrame.from_dict(metrics)
     return metrics
@@ -107,7 +112,6 @@ def save_output(weights, args, performance, metrics):
             f"{CEREBRO_PATH}results/values/positions/{args['save']}.csv", index=False)
         metrics.to_csv(
             f"{CEREBRO_PATH}results/values/metrics/{args['save']}.csv", index=False)
-
 
 
 def charge_fees(weights, performance, initial_cash, fee=0.001):  # TODO: verify
@@ -186,6 +190,7 @@ def compute_positions(weights):
 
     return pd.DataFrame.from_records(data)
 
+
 def get_bq_data():
     bq_table_id = "lambda1-299719.crypto_cmk.mod_daily_"
     data = {
@@ -197,27 +202,29 @@ def get_bq_data():
         "cap": bq_query(bq_table_id+"marketcap"),
     }
     for k, df in data.items():
-        df.columns = [name.replace("_","") for name in df.columns]
+        df.columns = [name.replace("_", "") for name in df.columns]
         df['date'] = pd.to_datetime(df['date'])
         data[k] = df.set_index('date')
         data[k] = data[k].fillna(method='ffill').fillna(method='bfill')
     data["returns"] = data["close"].pct_change()
     return data
 
+
 def bq_query(
-        table_id: str,
-        bigquery_client=bq_client,
-    ):
-        filtering_query = f"""
+    table_id: str,
+    bigquery_client=bq_client,
+):
+    filtering_query = f"""
             SELECT *
             FROM {table_id}
             ORDER BY date
         """
 
-        query_job = bigquery_client.query(filtering_query)
-        df = query_job.to_dataframe()
+    query_job = bigquery_client.query(filtering_query)
+    df = query_job.to_dataframe()
 
-        return df
+    return df
+
 
 def load_data(args, strategy):
     data = None
@@ -449,11 +456,12 @@ def compute_performance(weights, data, initial_cash):
 def apply_cppi(data, weights, floor_value, multiplier, initial_cash, days=30):
     performance = compute_performance(weights, data, initial_cash)
     floors = performance.rolling(days).max().fillna(initial_cash) * floor_value
-    invested_percents = (multiplier * (performance-floors)/100).clip(0,1)
+    invested_percents = (multiplier * (performance-floors)/100).clip(0, 1)
     for date, row in weights.iterrows():
         invested_percent = invested_percents.loc[date]
         weights.loc[date] = row * invested_percent
     return weights
+
 
 def compute_stoped_returns(data: dict, args: dict) -> dict:
     if args["stop_loss_fixed"] or args["stop_gain_fixed"]:
@@ -489,7 +497,8 @@ def add_short_ohlc(data):
     raise ValueError("asdf")
     return data
 
-def compute_ohlc_data(data:dict)-> dict:
+
+def compute_ohlc_data(data: dict) -> dict:
     ohlc_dict = {}
     symbols = data["close"].columns
     columns = ["open", "high", "low", "close"]
@@ -500,16 +509,18 @@ def compute_ohlc_data(data:dict)-> dict:
         ohlc_dict[symbol] = df
     return ohlc_dict
 
-def compute_shorts_ohlc(ohlc_dict: dict)-> dict:
+
+def compute_shorts_ohlc(ohlc_dict: dict) -> dict:
     shorts_dict = {}
     symbols = list(ohlc_dict.keys())
     for symbol in symbols:
         shorts_dict[symbol] = compute_short_ohlc(ohlc_dict[symbol])
     return shorts_dict
 
-def compute_short_ohlc(ohlc:pd.DataFrame)-> pd.DataFrame:
+
+def compute_short_ohlc(ohlc: pd.DataFrame) -> pd.DataFrame:
     short_ohlc = pd.DataFrame(index=ohlc.index, columns=ohlc.columns)
-    short_returns = ohlc.pct_change().fillna(1) #Todo: dapt high,low and close
+    short_returns = ohlc.pct_change().fillna(1)  # Todo: dapt high,low and close
     yesterday = None
     for i, today in enumerate(ohlc.index):
         for col in ohlc.columns:
@@ -517,16 +528,14 @@ def compute_short_ohlc(ohlc:pd.DataFrame)-> pd.DataFrame:
             if col == "open" and i != 0:
                 val = short_ohlc.loc[yesterday]["close"]
             if col == "high":
-                val = short_ohlc.loc[today]["open"] * (1- short_returns.loc[today]["high"])
+                val = short_ohlc.loc[today]["open"] * \
+                    (1 - short_returns.loc[today]["high"])
             if col == "low":
-                # print(today)
-                # print(short_ohlc.loc[today]["open"])
-                # print((1- short_returns.loc[today]["low"]))
-                # print((short_returns.loc[today]["low"]))
-                # print((short_returns))
-                val = short_ohlc.loc[today]["open"] * (1- short_returns.loc[today]["low"])
+                val = short_ohlc.loc[today]["open"] * \
+                    (1 - short_returns.loc[today]["low"])
             if col == "close":
-                val = short_ohlc.loc[today]["open"] * (1- short_returns.loc[today]["close"])
+                val = short_ohlc.loc[today]["open"] * \
+                    (1 - short_returns.loc[today]["close"])
             short_ohlc.loc[today, col] = val
 
         yesterday = today
@@ -538,4 +547,4 @@ def compute_short_ohlc(ohlc:pd.DataFrame)-> pd.DataFrame:
 #     for ind in indexes:
 #         for symbol in symbols:
 #             if args["stop_loss_fixed"] and data["low"].loc[ind, symbol] < y_close.loc[ind, symbol] * (1-args["stop_loss_fixed"]):
-#                 stoped_returns.loc[ind, symbol] = -args["stop_loss_fixed"] 
+#                 stoped_returns.loc[ind, symbol] = -args["stop_loss_fixed"]

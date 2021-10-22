@@ -87,8 +87,8 @@ def run_strat(strategy, data, args):
 def main():
     meta_args = {
         "strategy": "TopN",
-        "start_date": "2021-01-01",
-        "end_date": "2022-04-01",
+        "start_date": "2020-08-01",
+        "end_date": "2021-05-30",
         "fee": 0,
         "sizer": "power_cap",
         "management_commission": 0,
@@ -100,18 +100,14 @@ def main():
         "diversification_factor": 1,
         "cppi_floor": 0.55,
         "cppi_multiplier": 1,
-        "max_positions": 10,
-        "broker": "Bitso"
+        "max_positions": 2,
+        "broker": "Binance"
     }
     args = get_args(meta_args)
     strategy = strategies[args["strategy"]](args)
     data = load_data(args, strategy)
     data["returns"] = data["close"].pct_change()
     metrics, performance, weights = run_strat(strategy, data, args)
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    print(metrics)
-    print(performance)
-    print(weights)
 
 
 # if __name__ == "__main__":
