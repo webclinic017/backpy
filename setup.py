@@ -1,4 +1,4 @@
-import setuptools
+from setuptools import setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -6,15 +6,15 @@ with open("README.md", "r", encoding="utf-8") as fh:
 with open('backpy/requirements.txt') as f:
     required = f.read().splitlines()
 
-setuptools.setup(
+setup(
     name='backpy',
-    version='0.0.4',
+    version='0.0.5',
     author='Ridian',
     author_email='contact@ridian.io',
     description='Python vectorized backtester',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/ridian-io/backpy',
-    packages=['backpy', 'backpy.sizers', 'backpy.stops', 'backpy.strategies'],
+    packages=['backpy', 'backpy.sizers', 'backpy.stops', 'backpy.strategies' ],
     install_requires=required,
 )
