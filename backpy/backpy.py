@@ -76,7 +76,6 @@ def run_strat(strategy, data, args):
         str(args["start_date"]).split("-")[-1][:2]))
 
     metrics = ut.compute_metrics(performance)
-    print(metrics)
 
     # ut.save_output(weights, args, performance, metrics)
     if args["plot"]:
@@ -109,6 +108,7 @@ def main():
     data = load_data(args, strategy)
     data["returns"] = data["close"].pct_change()
     metrics, performance, weights = run_strat(strategy, data, args)
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     print(metrics)
     print(performance)
     print(weights)
