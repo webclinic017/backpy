@@ -1,7 +1,7 @@
 import os
 import argparse
 
-os.environ['environment'] = 'PROD' #TEST, PROD
+os.environ['environment'] = 'TEST' #TEST, PROD
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
@@ -88,7 +88,7 @@ def main():
     meta_args = {
         "strategy": "TopN",
         "start_date": "2020-08-01",
-        "end_date": "2021-05-30",
+        # "end_date": "2021-05-30",
         "fee": 0,
         "sizer": "power_cap",
         "management_commission": 0,

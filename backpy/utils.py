@@ -10,7 +10,7 @@ from requests import Session
 import json
 from pathlib import Path
 from google.cloud import bigquery
-
+from consts import CMC_KEY
 
 if __package__ is None or __package__ == '':
     from stops._stops_dict import stops
@@ -22,10 +22,9 @@ key_path = "./lambda1-bigquery-service-account.json"
 bq_client = bigquery.Client.from_service_account_json(key_path)
 
 
-DATASETS_PATH = os.environ["DATASETS_PATH"]
-CEREBRO_PATH = os.environ["CEREBRO_PATH"]
-CMK_KEY = os.environ["CMK_KEY"]
-cmk_path = f"{DATASETS_PATH}mod/cmk/"
+# DATASETS_PATH = os.environ["DATASETS_PATH"]
+# CEREBRO_PATH = os.environ["CEREBRO_PATH"]
+# cmk_path = f"{DATASETS_PATH}mod/cmk/"
 
 
 def get_args(parsed_args, meta_args):
@@ -95,23 +94,23 @@ def plot(data, performance, strategy, metrics, weights, args, benchmark="BTC"):
     plt.show()
 
 
-def save_output(weights, args, performance, metrics):
-    if args["save"]:
-        paths = ["performance", "weights", "positions", "metrics"]
-        for path in paths:
-            Path(
-                f"{CEREBRO_PATH}results/values/{path}/").mkdir(parents=True, exist_ok=True)
-        performance.to_csv(
-            f"{CEREBRO_PATH}results/values/performance/{args['save']}.csv")
-        if args["data"] == "performance":
-            weights = compute_optimized_weights(weights, args["strategies"])
-        weights.to_csv(
-            f"{CEREBRO_PATH}results/values/weights/{args['save']}.csv")
-        positions = compute_positions(weights)
-        positions.to_csv(
-            f"{CEREBRO_PATH}results/values/positions/{args['save']}.csv", index=False)
-        metrics.to_csv(
-            f"{CEREBRO_PATH}results/values/metrics/{args['save']}.csv", index=False)
+# def save_output(weights, args, performance, metrics):
+#     if args["save"]:
+#         paths = ["performance", "weights", "positions", "metrics"]
+#         for path in paths:
+#             Path(
+#                 f"{CEREBRO_PATH}results/values/{path}/").mkdir(parents=True, exist_ok=True)
+#         performance.to_csv(
+#             f"{CEREBRO_PATH}results/values/performance/{args['save']}.csv")
+#         if args["data"] == "performance":
+#             weights = compute_optimized_weights(weights, args["strategies"])
+#         weights.to_csv(
+#             f"{CEREBRO_PATH}results/values/weights/{args['save']}.csv")
+#         positions = compute_positions(weights)
+#         positions.to_csv(
+#             f"{CEREBRO_PATH}results/values/positions/{args['save']}.csv", index=False)
+#         metrics.to_csv(
+#             f"{CEREBRO_PATH}results/values/metrics/{args['save']}.csv", index=False)
 
 
 def charge_fees(weights, performance, initial_cash, fee=0.001):  # TODO: verify
@@ -228,9 +227,9 @@ def bq_query(
 
 def load_data(args, strategy):
     data = None
-    if args["data"] == "cmc":
-        data = load_cmc_data(args)
-    elif args["data"] == "performance":
+    # if args["data"] == "cmc":
+    #     data = load_cmc_data(args)
+    if args["data"] == "performance":
         data = load_performance_data(args, strategy)
     # elif args["data"] == "performance":
     #     data = load_big_query_data(args)
@@ -241,21 +240,21 @@ def load_data(args, strategy):
     return data
 
 
-def load_cmc_data(args) -> dict:
-    crypto_open = pd.read_csv(
-        cmk_path + f"metasets/open.csv", index_col="date", parse_dates=["date"])
-    crypto_high = pd.read_csv(
-        cmk_path + f"metasets/high.csv", index_col="date", parse_dates=["date"])
-    crypto_close = pd.read_csv(
-        cmk_path + f"metasets/close.csv", index_col="date", parse_dates=["date"])
-    crypto_low = pd.read_csv(
-        cmk_path + f"metasets/low.csv", index_col="date", parse_dates=["date"])
-    crypto_volume = pd.read_csv(
-        cmk_path + f"metasets/volume.csv", index_col="date", parse_dates=["date"])
-    crypto_cap = pd.read_csv(
-        cmk_path + f"metasets/market_cap.csv", index_col="date", parse_dates=["date"])
-    daily_constituents = pd.read_csv(
-        cmk_path + f"top_caps/{args['top']}.csv", index_col="date", parse_dates=["date"])
+# def load_cmc_data(args) -> dict:
+#     crypto_open = pd.read_csv(
+#         cmk_path + f"metasets/open.csv", index_col="date", parse_dates=["date"])
+#     crypto_high = pd.read_csv(
+#         cmk_path + f"metasets/high.csv", index_col="date", parse_dates=["date"])
+#     crypto_close = pd.read_csv(
+#         cmk_path + f"metasets/close.csv", index_col="date", parse_dates=["date"])
+#     crypto_low = pd.read_csv(
+#         cmk_path + f"metasets/low.csv", index_col="date", parse_dates=["date"])
+#     crypto_volume = pd.read_csv(
+#         cmk_path + f"metasets/volume.csv", index_col="date", parse_dates=["date"])
+#     crypto_cap = pd.read_csv(
+#         cmk_path + f"metasets/market_cap.csv", index_col="date", parse_dates=["date"])
+#     daily_constituents = pd.read_csv(
+#         cmk_path + f"top_caps/{args['top']}.csv", index_col="date", parse_dates=["date"])
 
     data = {
         "open": crypto_open,
@@ -284,7 +283,7 @@ def add_current_data(data):
 def get_current_price_data(symbols):
     headers = {
         'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': CMK_KEY,
+        'X-CMC_PRO_API_KEY': CMC_KEY,
     }
 
     session = Session()
@@ -308,7 +307,7 @@ def get_current_price_data(symbols):
 def get_current_cap_data(symbols):
     headers = {
         'Accepts': 'application/json',
-        'X-CMC_PRO_API_KEY': CMK_KEY,
+        'X-CMC_PRO_API_KEY': CMC_KEY,
     }
 
     session = Session()
@@ -354,96 +353,96 @@ def add_cap_data(data, cap_data, new_index):
     return data
 
 
-def load_quandl_data(args) -> dict:
-    crypto_path = f"{DATASETS_PATH}mod/crypto/"
-    crypto_open = pd.read_csv(
-        crypto_path + f"crypto_open.csv", index_col="date", parse_dates=["date"])
-    crypto_high = pd.read_csv(
-        crypto_path + f"crypto_high.csv", index_col="date", parse_dates=["date"])
-    crypto_close = pd.read_csv(
-        crypto_path + f"crypto_close.csv", index_col="date", parse_dates=["date"])
-    crypto_low = pd.read_csv(
-        crypto_path + f"crypto_low.csv", index_col="date", parse_dates=["date"])
-    crypto_volume = pd.read_csv(
-        crypto_path + f"crypto_volume_to.csv", index_col="date", parse_dates=["date"])
-    crypto_cap = pd.read_csv(
-        crypto_path + f"crypto_market_cap.csv", index_col="date", parse_dates=["date"])
-    daily_constituents = pd.read_csv(
-        crypto_path + f"crypto_daily_top_{30}.csv", index_col="date", parse_dates=["date"])
+# def load_quandl_data(args) -> dict:
+#     crypto_path = f"{DATASETS_PATH}mod/crypto/"
+#     crypto_open = pd.read_csv(
+#         crypto_path + f"crypto_open.csv", index_col="date", parse_dates=["date"])
+#     crypto_high = pd.read_csv(
+#         crypto_path + f"crypto_high.csv", index_col="date", parse_dates=["date"])
+#     crypto_close = pd.read_csv(
+#         crypto_path + f"crypto_close.csv", index_col="date", parse_dates=["date"])
+#     crypto_low = pd.read_csv(
+#         crypto_path + f"crypto_low.csv", index_col="date", parse_dates=["date"])
+#     crypto_volume = pd.read_csv(
+#         crypto_path + f"crypto_volume_to.csv", index_col="date", parse_dates=["date"])
+#     crypto_cap = pd.read_csv(
+#         crypto_path + f"crypto_market_cap.csv", index_col="date", parse_dates=["date"])
+#     daily_constituents = pd.read_csv(
+#         crypto_path + f"crypto_daily_top_{30}.csv", index_col="date", parse_dates=["date"])
 
-    data = {
-        "open": crypto_open,
-        "high": crypto_high,
-        "low": crypto_low,
-        "close": crypto_close,
-        "volume": crypto_volume,
-        "cap": crypto_cap,
-        # "current_constituents": daily_constituents,
-    }
+#     data = {
+#         "open": crypto_open,
+#         "high": crypto_high,
+#         "low": crypto_low,
+#         "close": crypto_close,
+#         "volume": crypto_volume,
+#         "cap": crypto_cap,
+#         # "current_constituents": daily_constituents,
+#     }
 
-    return data
-
-
-def load_performance_data(args, strategy) -> dict:
-    cerebro_path = f"{CEREBRO_PATH}results/values/performance/"
-    # files = os.listdir(cerebro_path)
-    files = strategy.params["strategies"]
-    close = None
-    for file in files:
-        df = pd.read_csv(cerebro_path+file+".csv",
-                         index_col=["date"], parse_dates=["date"])
-        if close is None:
-            close = pd.DataFrame(index=df.index)
-        close[file] = df.iloc[:, 0]
-
-    crypto_close = pd.read_csv(
-        cmk_path + f"metasets/close.csv", index_col="date", parse_dates=["date"])
-    close["BTC"] = crypto_close["BTC"]
-    daily_constituents = pd.read_csv(
-        cmk_path + f"top_caps/{args['top']}.csv", index_col="date", parse_dates=["date"])
-
-    df = pd.DataFrame()
-    data = {
-        "open": df,
-        "high": df,
-        "low": df,
-        "close": close,
-        "volume": df,
-        "cap": df,
-        # "current_constituents": daily_constituents,
-    }
-
-    if args["live"]:
-        new_index = list(data["close"].index)[-1]
-        # data["current_constituents"].loc[new_index] = data["current_constituents"].iloc[-1]
-
-    return data
+#     return data
 
 
-def compute_optimized_weights(weights, strategies):
-    weights = weights[strategies]
-    strategies = weights.columns
+# def load_performance_data(args, strategy) -> dict:
+#     cerebro_path = f"{CEREBRO_PATH}results/values/performance/"
+#     # files = os.listdir(cerebro_path)
+#     files = strategy.params["strategies"]
+#     close = None
+#     for file in files:
+#         df = pd.read_csv(cerebro_path+file+".csv",
+#                          index_col=["date"], parse_dates=["date"])
+#         if close is None:
+#             close = pd.DataFrame(index=df.index)
+#         close[file] = df.iloc[:, 0]
 
-    frames = {}
-    weights_path = f"{CEREBRO_PATH}results/values/weights/"
-    for strategy in strategies:
-        df = pd.read_csv(weights_path + strategy + ".csv",
-                         index_col="date", parse_dates=["date"])
-        frames[strategy] = df
+#     crypto_close = pd.read_csv(
+#         cmk_path + f"metasets/close.csv", index_col="date", parse_dates=["date"])
+#     close["BTC"] = crypto_close["BTC"]
+#     daily_constituents = pd.read_csv(
+#         cmk_path + f"top_caps/{args['top']}.csv", index_col="date", parse_dates=["date"])
 
-    d = {}
-    for date in list(weights.index):
-        strat_day_weights = weights.loc[date].to_dict()
-        strats_weights = []
-        for strat, weight in strat_day_weights.items():
-            row = frames[strat].loc[date] * weight
-            strats_weights.append(row)
-        d[date] = sum(strats_weights).values
+#     df = pd.DataFrame()
+#     data = {
+#         "open": df,
+#         "high": df,
+#         "low": df,
+#         "close": close,
+#         "volume": df,
+#         "cap": df,
+#         # "current_constituents": daily_constituents,
+#     }
 
-    final_weights = pd.DataFrame.from_dict(
-        d, orient="index", columns=frames[strategies[0]].columns)
-    final_weights.index.name = "date"
-    return final_weights
+#     if args["live"]:
+#         new_index = list(data["close"].index)[-1]
+#         # data["current_constituents"].loc[new_index] = data["current_constituents"].iloc[-1]
+
+#     return data
+
+
+# def compute_optimized_weights(weights, strategies):
+#     weights = weights[strategies]
+#     strategies = weights.columns
+
+#     frames = {}
+#     weights_path = f"{CEREBRO_PATH}results/values/weights/"
+#     for strategy in strategies:
+#         df = pd.read_csv(weights_path + strategy + ".csv",
+#                          index_col="date", parse_dates=["date"])
+#         frames[strategy] = df
+
+#     d = {}
+#     for date in list(weights.index):
+#         strat_day_weights = weights.loc[date].to_dict()
+#         strats_weights = []
+#         for strat, weight in strat_day_weights.items():
+#             row = frames[strat].loc[date] * weight
+#             strats_weights.append(row)
+#         d[date] = sum(strats_weights).values
+
+#     final_weights = pd.DataFrame.from_dict(
+#         d, orient="index", columns=frames[strategies[0]].columns)
+#     final_weights.index.name = "date"
+#     return final_weights
 
 
 def compute_performance(weights, data, initial_cash):
