@@ -1,6 +1,8 @@
 
 import pandas as pd
 import os
+from binance.client import Client
+
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
@@ -9,7 +11,7 @@ else:
     from ..sizers._sizers_dict import sizers
 
 
-DATASETS_PATH = os.environ["DATASETS_PATH"]
+# DATASETS_PATH = os.environ["DATASETS_PATH"]
 
 
 class BaseStrategy():
@@ -56,11 +58,15 @@ class BaseStrategy():
         return all_weights
 
     def get_available_constituents(self, data, date, args):
-        symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols.csv"
-        if args["market"] == "futures":
-            symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols_futures.csv"
+        client = Client()
+        coin_data = client.get_exchange_info()["symbols"]
+        symbols = sorted([data["baseAsset"] for data in coin_data if data["quoteAsset"] == "USDT"])
+        
+        # symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols.csv"
+        # if args["market"] == "futures":
+        #     symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols_futures.csv"
 
-        symbols = list(pd.read_csv(symbols_path)["symbols"])
+        # symbols = list(pd.read_csv(symbols_path)["symbols"])
         return sorted(symbols)
 
     def compute_day_weights(self, all_symbols, daily_positions, date, data, args):
