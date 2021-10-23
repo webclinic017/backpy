@@ -14,7 +14,7 @@ else:
     from .utils import charge_fees, charge_commissions, load_data
 
 
-CEREBRO_PATH = os.environ["CEREBRO_PATH"]
+# CEREBRO_PATH = os.environ["CEREBRO_PATH"]
 
 
 def get_args(meta_args):
