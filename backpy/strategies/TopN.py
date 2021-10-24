@@ -26,7 +26,7 @@ def get_broker_symbols(broker: str):
 class TopN(BaseStrategy):
     def __init__(self, args):
         self.params = {
-            "days": [6],
+            "days": [1,2,3,4,5,6,7],
             "max_positions": args["max_positions"],
             "symbols" : get_broker_symbols(args["broker"])
         }

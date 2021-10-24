@@ -76,6 +76,7 @@ def run_strat(strategy, data, args):
         str(args["start_date"]).split("-")[-1][:2]))
 
     metrics = ut.compute_metrics(performance)
+    print(metrics)
 
     # ut.save_output(weights, args, performance, metrics)
     if args["plot"]:
@@ -98,9 +99,9 @@ def main():
         "plot": True,
 
         "diversification_factor": 1,
-        "cppi_floor": 0.55,
-        "cppi_multiplier": 1,
-        "max_positions": 2,
+        "cppi_floor": 0.62,
+        "cppi_multiplier": 1.2,
+        "max_positions": 1,
         "broker": "Binance"
     }
     args = get_args(meta_args)

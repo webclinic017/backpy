@@ -25,13 +25,12 @@ class BaseStrategy():
         weights = [0] * len(symbols)
         all_symbols = symbols + short_symbols
 
+        all_current_constituents = self.get_available_constituents()
         for i, date in enumerate(dates):
             # print(date)
             if date.weekday() in self.params["days"]:
-                current_constituents = self.get_available_constituents(
-                    data, date, args)
                 current_constituents = [
-                    symbol for symbol in current_constituents if symbol in list(data["close"].columns)]
+                    symbol for symbol in all_current_constituents if symbol in list(data["close"].columns)]
 
                 if len(daily_positions) > 0:
                     sell_signals = self.get_sell_signals(
@@ -57,11 +56,12 @@ class BaseStrategy():
         all_weights.index.name = "date"
         return all_weights
 
-    def get_available_constituents(self, data, date, args):
+    def get_available_constituents(self):
         client = Client()
         coin_data = client.get_exchange_info()["symbols"]
-        symbols = sorted([data["baseAsset"] for data in coin_data if data["quoteAsset"] == "USDT"])
-        
+        symbols = sorted([data["baseAsset"]
+                         for data in coin_data if data["quoteAsset"] == "USDT"])
+
         # symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols.csv"
         # if args["market"] == "futures":
         #     symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols_futures.csv"
