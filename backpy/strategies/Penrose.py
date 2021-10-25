@@ -40,7 +40,7 @@ class Penrose(BaseStrategy):
     def get_buy_signals(self, data, date, daily_positions, current_constituents, i):
         symbols = sorted(self.params["symbols"])
         symbols = [s for s in symbols if s in list(data["cap"].columns)]
-        symbols = list(sorted(symbols, key=lambda symbol: data["cap"][symbol].loc[date],reverse=True))[:100]
+        symbols = list(sorted(symbols, key=lambda symbol: data["cap"][symbol].loc[date],reverse=True))[:50]
         symbols = list(sorted(symbols, key=lambda symbol: data["roc"][symbol].loc[date],reverse=True))
         symbols = symbols[:self.params["max_positions"]]
         print(date, symbols)
