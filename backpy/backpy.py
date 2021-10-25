@@ -19,6 +19,8 @@ else:
 
 def get_args(meta_args):
     parser = argparse.ArgumentParser()
+    parser.add_argument("-frequency", default="")
+
     parser.add_argument("-start_date", default="2010-01-01")
     parser.add_argument("-end_date", default="3000-01-01")
     parser.add_argument("-strategy", required=False)
