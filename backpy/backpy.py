@@ -89,7 +89,7 @@ def main():
     meta_args = {
         "strategy": "Penrose",
         "start_date": "2021-01-01",
-        # "end_date": "2021-05-30",
+        "end_date": "2021-03-02",
         "fee": 0.,
         "sizer": "power_cap",
         "management_commission": 0,
