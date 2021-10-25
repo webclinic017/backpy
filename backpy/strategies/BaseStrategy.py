@@ -62,11 +62,6 @@ class BaseStrategy():
         symbols = sorted([data["baseAsset"]
                          for data in coin_data if data["quoteAsset"] == "USDT"])
 
-        # symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols.csv"
-        # if args["market"] == "futures":
-        #     symbols_path = f"{DATASETS_PATH}raw/binance/available_symbols_futures.csv"
-
-        # symbols = list(pd.read_csv(symbols_path)["symbols"])
         return sorted(symbols)
 
     def compute_day_weights(self, all_symbols, daily_positions, date, data, args):

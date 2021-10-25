@@ -12,6 +12,7 @@ from .TAMomentum import TAMomentum
 from .OneLongShort import OneLongShort
 from .TopN import TopN
 from .LongBTC import LongBTC
+from .Penrose import Penrose
 
 
 
@@ -29,5 +30,6 @@ strategies = {
     # "RandomForests": RandomForests,
     "OneLongShort": OneLongShort,
     "TopN": TopN,
-    "LongBTC": LongBTC
+    "LongBTC": LongBTC,
+    "Penrose": Penrose,
 }

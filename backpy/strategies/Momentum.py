@@ -13,7 +13,7 @@ class Momentum(BaseStrategy):
 
     def add_indicators(self, data, args):
         data["roc"] = data["close"].apply(lambda x: ta.roc(x, length=self.params["roc"]), axis=0)
-        data["sma"] = data["close"].apply(lambda x: ta.ema(x, length=self.params["sma"]), axis=0)
+        data["sma"] = data["close"].apply(lambda x: ta.sma(x, length=self.params["sma"]), axis=0)
 
         return data
 
