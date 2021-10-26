@@ -6,12 +6,12 @@ ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
     from strategies._strat_dict import strategies
-    from utils import charge_fees, charge_commissions, load_data
+    from utils import charge_fees, charge_commissions
     import utils as ut
 else:
     from .strategies._strat_dict import strategies
     from . import utils as ut
-    from .utils import charge_fees, charge_commissions, load_data
+    from .utils import charge_fees, charge_commissions
 
 
 # CEREBRO_PATH = os.environ["CEREBRO_PATH"]
