@@ -1,12 +1,12 @@
 import os
 import argparse
 
-os.environ['environment'] = 'PROD'  # TEST, PROD
+os.environ['environment'] = 'TEST'  # TEST, PROD
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
     from strategies._strat_dict import strategies
-    from utils import charge_fees, charge_commissions
+    from utils import charge_fees, charge_commissions, load_data
     import utils as ut
 else:
     from .strategies._strat_dict import strategies
@@ -87,30 +87,31 @@ def run_strat(strategy, data, args):
     return metrics, performance, weights
 
 
-# def main():
-#     meta_args = {
-#         "strategy": "Penrose",
-#         "start_date": "2021-01-01",
-#         "end_date": "2021-03-02",
-#         "fee": 0.,
-#         "sizer": "power_cap",
-#         "management_commission": 0,
-#         "success_commission": 0,
-#         # "save": "TopN",
-#         "data": "bigquery",
-#         "plot": True,
+def main():
+    meta_args = {
+        "strategy": "Penrose",
+        # "strategy": "C10_multi_mac",
+        "start_date": "2021-01-01",
+        # "end_date": "2021-03-02",
+        "fee": 0,
+        "sizer": "power_cap",
+        "management_commission": 0,
+        "success_commission": 0,
+        # "save": "TopN",
+        "data": "bigquery",
+        "plot": True,
 
-#         "diversification_factor": 1,
-#         "cppi_floor": 0.618,
-#         "cppi_multiplier": 1,
-#         "max_positions": 10,
-#         "broker": "Binance"
-#     }
-#     args = get_args(meta_args)
-#     strategy = strategies[args["strategy"]](args)
-#     data = load_data(args, strategy)
-#     data["returns"] = data["close"].pct_change()
-#     metrics, performance, weights = run_strat(strategy, data, args)
+        "diversification_factor": 1,
+        "cppi_floor": 0.75,
+        "cppi_multiplier": 1,
+        "max_positions": 10,
+        "broker": "Binance"
+    }
+    args = get_args(meta_args)
+    strategy = strategies[args["strategy"]](args)
+    data = load_data(args, strategy)
+    data["returns"] = data["close"].pct_change()
+    metrics, performance, weights = run_strat(strategy, data, args)
 
 
 # if __name__ == "__main__":

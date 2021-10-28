@@ -8,9 +8,9 @@ class C10_multi_mac(BaseStrategy):
     def __init__(self, args):
         self.params = {
             "days": [1,2,3,4,5,6,7],
-            "max_positions" : 20,
-            "fast_periods": [4,6,8,10],
-            "slow_periods_mult": [2,3,4,5],
+            "max_positions" : 10,
+            "fast_periods": [8,12],
+            "slow_periods_mult": [2,2],
             "roc": args["roc"] if args.get("roc") else 100,
             "sma": 150
         }
@@ -31,7 +31,7 @@ class C10_multi_mac(BaseStrategy):
                 cross_up = data[f"sma_fast_{i}"][symbol].loc[date] > data[f"sma_slow_{i}"][symbol].loc[date]
                 if cross_up:
                     crosses += 1
-            if crosses >= 4:
+            if crosses >= 2:
                 symbols.append(symbol)
 
         symbols = list(sorted(symbols, key=lambda symbol: data["roc"][symbol].loc[date], reverse=True))

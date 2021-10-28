@@ -31,6 +31,8 @@ class BaseStrategy():
             if date.weekday() in self.params["days"]:
                 current_constituents = [
                     symbol for symbol in all_current_constituents if symbol in list(data["close"].columns)]
+                no_symbols = ["USDT", "USDC", "DAI", "BUSD"]
+                current_constituents = [s for s in current_constituents if s not in no_symbols]
 
                 if len(daily_positions) > 0:
                     sell_signals = self.get_sell_signals(
@@ -44,7 +46,9 @@ class BaseStrategy():
                         signal for signal in buy_signals if signal not in daily_positions]
                     daily_positions = daily_positions + buy_signals
                     if len(daily_positions) > self.params["max_positions"]:
-                        daily_positions = daily_positions[:self.params["max_positions"]]
+                        positions = daily_positions[:self.params["max_positions"]]
+                        print(positions)
+                        daily_positions = positions
 
                 weights = self.compute_day_weights(
                     all_symbols, daily_positions, date, data, args)

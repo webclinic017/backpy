@@ -17,9 +17,9 @@ if __package__ is None or __package__ == '':
 else:
     from .stops._stops_dict import stops
 
-# key_path = "./lambda1-bigquery-service-account.json"
+key_path = "./lambda1-bigquery-service-account.json"
 
-# bq_client = bigquery.Client.from_service_account_json(key_path)
+bq_client = bigquery.Client.from_service_account_json(key_path)
 
 
 # DATASETS_PATH = os.environ["DATASETS_PATH"]
@@ -190,44 +190,44 @@ def compute_positions(weights):
     return pd.DataFrame.from_records(data)
 
 
-# def get_bq_data():
-#     bq_table_id = "lambda1-299719.crypto_cmk.mod_daily_"
-#     data = {
-#         "open": bq_query(bq_table_id+"open"),
-#         "high": bq_query(bq_table_id+"high"),
-#         "low": bq_query(bq_table_id+"low"),
-#         "close": bq_query(bq_table_id+"close"),
-#         "volume": bq_query(bq_table_id+"volume"),
-#         "cap": bq_query(bq_table_id+"marketcap"),
-#     }
-#     for k, df in data.items():
-#         df.columns = [name.replace("_", "") for name in df.columns]
-#         df['date'] = pd.to_datetime(df['date'])
-#         data[k] = df.set_index('date')
-#         data[k] = data[k].fillna(method='ffill').fillna(method='bfill')
-#     data["returns"] = data["close"].pct_change()
-#     return data
+def get_bq_data():
+    bq_table_id = "lambda1-299719.crypto_cmk.mod_daily_"
+    data = {
+        "open": bq_query(bq_table_id+"open"),
+        "high": bq_query(bq_table_id+"high"),
+        "low": bq_query(bq_table_id+"low"),
+        "close": bq_query(bq_table_id+"close"),
+        "volume": bq_query(bq_table_id+"volume"),
+        "cap": bq_query(bq_table_id+"marketcap"),
+    }
+    for k, df in data.items():
+        df.columns = [name.replace("_", "") for name in df.columns]
+        df['date'] = pd.to_datetime(df['date'])
+        data[k] = df.set_index('date')
+        data[k] = data[k].fillna(method='ffill').fillna(method='bfill')
+    data["returns"] = data["close"].pct_change()
+    return data
 
 
-# def bq_query(
-#     table_id: str,
-#     bigquery_client=bq_client,
-# ):
-#     filtering_query = f"""
-#             SELECT *
-#             FROM {table_id}
-#             ORDER BY date
-#         """
+def bq_query(
+    table_id: str,
+    bigquery_client=bq_client,
+):
+    filtering_query = f"""
+            SELECT *
+            FROM {table_id}
+            ORDER BY date
+        """
 
-#     query_job = bigquery_client.query(filtering_query)
-#     df = query_job.to_dataframe()
+    query_job = bigquery_client.query(filtering_query)
+    df = query_job.to_dataframe()
 
-#     return df
+    return df
 
 
-# def load_data(args, strategy):
-#     data = get_bq_data()
-#     return data
+def load_data(args, strategy):
+    data = get_bq_data()
+    return data
 
 
 # def load_cmc_data(args) -> dict:
