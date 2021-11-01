@@ -42,10 +42,9 @@ class Penrose(BaseStrategy):
 
     def get_buy_signals(self, data, date, daily_positions, current_constituents, i):
         current_constituents = list(sorted(
-            current_constituents, key=lambda symbol: data["cap"][symbol].loc[date], reverse=True))[:100]
+            current_constituents, key=lambda symbol: data["cap"][symbol].loc[date], reverse=True))[:50]
         symbols = list(sorted(
             current_constituents, key=lambda symbol: data["roc"][symbol].loc[date], reverse=True))
-        
         return symbols
 
     def get_sell_signals(self, data, date, daily_positions, current_constituents, i):

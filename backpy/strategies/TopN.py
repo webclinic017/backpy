@@ -28,16 +28,18 @@ class TopN(BaseStrategy):
         self.params = {
             "days": [1,2,3,4,5,6,7],
             "max_positions": args["max_positions"],
-            "symbols" : get_broker_symbols(args["broker"])
+            "symbols" : get_broker_symbols(args["broker"]),
+            "window": 10
         }
 
     def add_indicators(self, data, args):
+        data["moving_cap"] = data["cap"].rolling(window=self.params["window"]).mean()
         return data
 
     def get_buy_signals(self, data, date, daily_positions, current_constituents, i):
         symbols = sorted(self.params["symbols"])
         symbols = [s for s in symbols if s in list(data["cap"].columns)]
-        symbols = list(sorted(symbols, key=lambda symbol: data["cap"][symbol].loc[date],reverse=True))
+        symbols = list(sorted(symbols, key=lambda symbol: data["moving_cap"][symbol].loc[date],reverse=True))
         symbols = symbols[:self.params["max_positions"]]
         return symbols
 

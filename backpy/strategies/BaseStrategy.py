@@ -22,8 +22,9 @@ class BaseStrategy():
             lambda d: d >= args["start_date"] and d <= args["end_date"], list(data["close"].index)))
         symbols = sorted(list(data["close"].columns))
         short_symbols = [f"{symbol}s" for symbol in symbols]
-        weights = [0] * len(symbols)
         all_symbols = symbols + short_symbols
+        todays_weights = [0] * len(all_symbols)
+        current_weights = [0] * len(all_symbols)
 
         all_current_constituents = self.get_available_constituents()
         for i, date in enumerate(dates):
@@ -32,7 +33,8 @@ class BaseStrategy():
                 current_constituents = [
                     symbol for symbol in all_current_constituents if symbol in list(data["close"].columns)]
                 no_symbols = ["USDT", "USDC", "DAI", "BUSD"]
-                current_constituents = [s for s in current_constituents if s not in no_symbols]
+                current_constituents = [
+                    s for s in current_constituents if s not in no_symbols]
 
                 if len(daily_positions) > 0:
                     sell_signals = self.get_sell_signals(
@@ -47,13 +49,17 @@ class BaseStrategy():
                     daily_positions = daily_positions + buy_signals
                     if len(daily_positions) > self.params["max_positions"]:
                         positions = daily_positions[:self.params["max_positions"]]
-                        print(positions)
+                        # print(date, positions)
                         daily_positions = positions
 
-                weights = self.compute_day_weights(
+                todays_weights = self.compute_day_weights(
                     all_symbols, daily_positions, date, data, args)
+            distance = sum([abs(todays_weights[i] - current_weights[i])
+                            for i in range(len(todays_weights))])
+            if distance >= args["min_distance"]:
+                current_weights = todays_weights
 
-            all_weights[date] = weights.copy()
+            all_weights[date] = current_weights.copy()
 
         all_weights = pd.DataFrame.from_dict(
             all_weights, orient="index", columns=all_symbols)
