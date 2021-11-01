@@ -17,7 +17,7 @@ if __package__ is None or __package__ == '':
 else:
     from .stops._stops_dict import stops
 
-key_path = "./lambda1-bigquery-service-account.json"
+key_path = "./ridian-bigquery-service-account.json"
 
 bq_client = bigquery.Client.from_service_account_json(key_path)
 
