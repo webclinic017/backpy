@@ -17,9 +17,9 @@ if __package__ is None or __package__ == '':
 else:
     from .stops._stops_dict import stops
 
-key_path = "./ridian-bigquery-service-account.json"
+# key_path = "./ridian-bigquery-service-account.json"
 
-bq_client = bigquery.Client.from_service_account_json(key_path)
+# bq_client = bigquery.Client.from_service_account_json(key_path)
 
 
 # DATASETS_PATH = os.environ["DATASETS_PATH"]
@@ -191,7 +191,7 @@ def compute_positions(weights):
 
 
 # def get_bq_data():
-#     bq_table_id = "lambda1-299719.crypto_cmk.mod_daily_"
+#     bq_table_id = "ridian-97524:crypto_cmk.mod_daily_".replace(":",".")
 #     data = {
 #         "open": bq_query(bq_table_id+"open"),
 #         "high": bq_query(bq_table_id+"high"),

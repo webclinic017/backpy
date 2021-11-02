@@ -29,7 +29,7 @@ def get_broker_symbols(broker: str):
 class Penrose(BaseStrategy):
     def __init__(self, args):
         self.params = {
-            "days": [1,2,3,4,5,6],
+            "days": [0,1,2,3,4,5,6],
             "max_positions": args["max_positions"],
             "symbols": get_broker_symbols(args["broker"]),
             "roc": 15,

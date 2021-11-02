@@ -51,14 +51,13 @@ class BaseStrategy():
                         positions = daily_positions[:self.params["max_positions"]]
                         # print(date, positions)
                         daily_positions = positions
-
+                print(date, daily_positions)
                 todays_weights = self.compute_day_weights(
                     all_symbols, daily_positions, date, data, args)
             distance = sum([abs(todays_weights[i] - current_weights[i])
                             for i in range(len(todays_weights))])
             if distance >= args["min_distance"]:
                 current_weights = todays_weights
-
             all_weights[date] = current_weights.copy()
 
         all_weights = pd.DataFrame.from_dict(

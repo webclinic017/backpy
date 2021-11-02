@@ -1,7 +1,7 @@
 import os
 import argparse
 
-os.environ['environment'] = 'PROD'  # TEST, PROD
+os.environ['environment'] = 'TEST'  # TEST, PROD
 ENVIRONMENT = os.environ["environment"]
 
 if ENVIRONMENT == "TEST":
@@ -90,7 +90,7 @@ def run_strat(strategy, data, args):
 
 # def main():
 #     meta_args = {
-#         "strategy": "TopN",
+#         "strategy": "Penrose",
 #         # "strategy": "C10_multi_mac",
 #         "start_date": "2021-01-01",
 #         # "end_date": "2021-03-02",
@@ -100,7 +100,7 @@ def run_strat(strategy, data, args):
 #         "success_commission": 0,
 #         # "save": "TopN",
 #         "data": "bigquery",
-#         "plot": True,
+#         "plot": False,
 
 #         "diversification_factor": 1,
 #         "cppi_floor": 0.65,
