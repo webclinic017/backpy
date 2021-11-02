@@ -1,4 +1,4 @@
-backpy/lambda1-bigquery-service-account.json
+backpy/ridian-bigquery-service-account.json
 backpy/strategies/models/**
 # Byte-compiled / optimized / DLL files
 __pycache__/
